@@ -35,10 +35,18 @@ const Entries_INITIAL_STATE: EntriesState = {
 export const EntriesProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
 
+  const addNewEntry = (entry: Entry) => {
+    dispatch({
+      type: '[Entry] Add-entry',
+      payload: entry
+    });
+  };
+
   return (
     <EntriesContext.Provider
       value={{
-        ...state
+        ...state,
+        addNewEntry
       }}
     >
       {children}

@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { Card, CardContent, CardHeader, Grid, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { UIContext } from '../context/ui';
-import { EntryList } from '../components/ui';
+import { EntryList, NewEntry } from '../components/ui';
 
 const HomaPage: NextPage = () => {
   const { sidemenuOpen } = useContext(UIContext);
@@ -17,6 +17,7 @@ const HomaPage: NextPage = () => {
           }}>
             <CardHeader title="Pendientes" />
 
+              <NewEntry />
               <EntryList status='pending'/>
           </Card>
         </Grid>
