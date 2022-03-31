@@ -26,7 +26,7 @@ const HomaPage: NextPage = () => {
           <Card sx={{
             height: 'calc(100vh - 100px)'
           }}>
-            <CardHeader title="Pendientes" />
+            <CardHeader title="En Progreso" />
 
             <EntryList status='in-progress' />
           </Card>
@@ -36,7 +36,7 @@ const HomaPage: NextPage = () => {
           <Card sx={{
             height: 'calc(100vh - 100px)'
           }}>
-            <CardHeader title="Pendientes" />
+            <CardHeader title="Completadas" />
 
             <EntryList status='finished'/>
           </Card>

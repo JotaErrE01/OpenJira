@@ -1,8 +1,8 @@
-import { FC, useReducer } from 'react';
-import { v4 as uuid } from 'uuid';
+import { FC, useReducer, useEffect } from 'react';
 import { EntriesContext } from './EntriesContext';
 import { entriesReducer } from './entriesReducer';
 import { Entry } from '../../interfaces/entry';
+import { entriesApi } from '../../axios';
 
 export interface EntriesState {
   entries: Entry[];
@@ -10,26 +10,7 @@ export interface EntriesState {
 
 // eslint-disable-next-line camelcase
 const Entries_INITIAL_STATE: EntriesState = {
-  entries: [
-    {
-      _id: uuid(),
-      description: 'Pendiente: Cupidatat ut esse tempor adipisicing proident nisi consectetur culpa nulla excepteur.',
-      status: 'pending',
-      createdAt: Date.now()
-    },
-    {
-      _id: uuid(),
-      description: 'Progreso: Cupidatat ut esse tempor adipisicing proident nisi consectetur culpa nulla excepteur.',
-      status: 'in-progress',
-      createdAt: Date.now() - 1000000
-    },
-    {
-      _id: uuid(),
-      description: 'Terminadas: Cupidatat ut esse tempor adipisicing proident nisi consectetur culpa nulla excepteur.',
-      status: 'finished',
-      createdAt: Date.now() - 100000
-    }
-  ]
+  entries: []
 };
 
 export const EntriesProvider: FC = ({ children }) => {
@@ -42,11 +23,29 @@ export const EntriesProvider: FC = ({ children }) => {
     });
   };
 
+  const updateEntry = (entry: Entry) => {
+    dispatch({ type: '[Entry] Update-entry', payload: entry });
+  };
+
+  const refreshEntries = async () => {
+    const { data } = await entriesApi.get<Entry[]>('/entries');
+
+    dispatch({
+      type: '[Entry] Initial-entries',
+      payload: data
+    });
+  };
+
+  useEffect(() => {
+    refreshEntries();
+  }, []);
+
   return (
     <EntriesContext.Provider
       value={{
         ...state,
-        addNewEntry
+        addNewEntry,
+        updateEntry
       }}
     >
       {children}
