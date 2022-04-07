@@ -4,8 +4,9 @@ import { db } from '../../../database';
 import { Entry, IEntry } from '../../../models';
 
 type Data =
-  { message: string } |
-  IEntry[]
+  | { message: string }
+  | IEntry[]
+  | IEntry;
 
 export default function handler (req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
@@ -33,17 +34,26 @@ const getEntries = async (res: NextApiResponse<Data>) => {
 };
 
 const postEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  // conectarse a la base de datos
-  await db.connect();
-
   const { description = '' } = req.body;
 
-  // const entry = new Entry({ title, content });
+  try {
+    // conectarse a la base de datos
+    await db.connect();
 
-  // await entry.save();
+    const newEntry = new Entry({
+      description,
+      createdAt: Date.now()
+    });
 
-  // desconectarse a la base de datos
-  await db.disconnect();
+    await newEntry.save();
 
-  res.status(201).json({ message: description });
+    // desconectarse a la base de datos
+    await db.disconnect();
+
+    res.status(201).json(newEntry);
+  } catch (error) {
+    await db.disconnect();
+    console.log(error);
+    res.status(500).json({ message: 'Error del Servidor' });
+  }
 };
